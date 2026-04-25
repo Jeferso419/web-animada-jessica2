@@ -1,0 +1,317 @@
+/* ============================================================
+   JESSICA — SITIO PERSONAL / ESTILOS COMPARTIDOS
+   Fuentes: Playfair Display + Lato
+   Paleta: Negro profundo / Púrpura magenta / Dorado cálido
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400;700&family=Dancing+Script:wght@600&display=swap');
+
+/* ===== VARIABLES ===== */
+:root {
+  --color-bg:        #0a0008;
+  --color-surface:   rgba(20, 5, 25, 0.75);
+  --color-magenta:   #e000c8;
+  --color-magenta-soft: rgba(224, 0, 200, 0.25);
+  --color-gold:      #f5c842;
+  --color-gold-soft: rgba(245, 200, 66, 0.15);
+  --color-white:     #f0eaf5;
+  --color-muted:     rgba(240, 234, 245, 0.65);
+  --radius-card:     20px;
+  --radius-pill:     50px;
+  --transition:      0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  --font-display:    'Playfair Display', Georgia, serif;
+  --font-script:     'Dancing Script', cursive;
+  --font-body:       'Lato', sans-serif;
+  --nav-height:      68px;
+}
+
+/* ===== RESET BASE ===== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-body);
+  color: var(--color-white);
+  background-color: var(--color-bg);
+  background-image: url("imagenes/3c91385f30ffdc307f872d94a4a0dc10 (1).jpg");
+  background-attachment: fixed;
+  background-size: cover;
+  background-position: center;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Overlay oscuro sobre el fondo para legibilidad */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(10,0,8,0.82) 0%,
+    rgba(40,5,55,0.72) 50%,
+    rgba(10,0,8,0.88) 100%
+  );
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Todo el contenido encima del overlay */
+body > * { position: relative; z-index: 1; }
+
+/* ============================================================
+   NAVBAR
+   ============================================================ */
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  height: var(--nav-height);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 40px;
+  background: rgba(8, 0, 12, 0.82);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border-bottom: 1px solid rgba(224, 0, 200, 0.22);
+  box-shadow: 0 4px 30px rgba(0,0,0,0.5);
+}
+
+.navbar-brand {
+  font-family: var(--font-script);
+  font-size: 1.6rem;
+  color: var(--color-gold);
+  text-decoration: none;
+  letter-spacing: 1px;
+  text-shadow: 0 0 14px rgba(245, 200, 66, 0.45);
+  flex-shrink: 0;
+}
+
+.navbar-links {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  list-style: none;
+}
+
+.navbar-links li a {
+  display: block;
+  padding: 8px 18px;
+  color: var(--color-muted);
+  text-decoration: none;
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  border-radius: var(--radius-pill);
+  border: 1px solid transparent;
+  transition: var(--transition);
+  position: relative;
+}
+
+.navbar-links li a::after {
+  content: '';
+  position: absolute;
+  bottom: 5px;
+  left: 50%;
+  transform: translateX(-50%) scaleX(0);
+  width: 60%;
+  height: 1.5px;
+  background: var(--color-magenta);
+  border-radius: 2px;
+  transition: var(--transition);
+}
+
+.navbar-links li a:hover,
+.navbar-links li a.activo {
+  color: var(--color-white);
+  border-color: var(--color-magenta-soft);
+  background: var(--color-magenta-soft);
+  box-shadow: 0 0 16px rgba(224, 0, 200, 0.2);
+}
+
+.navbar-links li a:hover::after,
+.navbar-links li a.activo::after {
+  transform: translateX(-50%) scaleX(1);
+}
+
+/* Hamburger — móvil */
+.navbar-toggle {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  cursor: pointer;
+  padding: 6px;
+  background: none;
+  border: none;
+}
+
+.navbar-toggle span {
+  display: block;
+  width: 26px;
+  height: 2px;
+  background: var(--color-white);
+  border-radius: 2px;
+  transition: var(--transition);
+}
+
+.navbar-toggle.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.navbar-toggle.open span:nth-child(2) { opacity: 0; }
+.navbar-toggle.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+.site-footer {
+  position: relative;
+  z-index: 1;
+  background: linear-gradient(to right, rgba(0,0,0,0.7), rgba(50,5,65,0.5));
+  border-top: 1px solid rgba(224, 0, 200, 0.2);
+  padding: 36px 40px 24px;
+  text-align: center;
+}
+
+.footer-mensaje {
+  font-family: var(--font-script);
+  font-size: 1.4rem;
+  color: var(--color-gold);
+  letter-spacing: 1px;
+  margin-bottom: 10px;
+  text-shadow: 0 0 12px rgba(245,200,66,0.4);
+}
+
+.site-footer p {
+  font-size: 0.82rem;
+  color: var(--color-muted);
+  letter-spacing: 1px;
+  margin: 4px 0;
+}
+
+.footer-copy {
+  margin-top: 14px;
+  font-size: 0.72rem;
+  opacity: 0.45;
+}
+
+/* ============================================================
+   UTILIDADES COMUNES
+   ============================================================ */
+
+/* Tarjeta de vidrio */
+.glass-card {
+  background: rgba(20, 5, 28, 0.6);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(224, 0, 200, 0.18);
+  border-radius: var(--radius-card);
+}
+
+/* Títulos de sección */
+.section-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  color: var(--color-gold);
+  letter-spacing: 2px;
+  text-align: center;
+  margin-bottom: 10px;
+  text-shadow: 0 0 20px rgba(245,200,66,0.35);
+}
+
+.section-subtitle {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 1rem;
+  color: var(--color-muted);
+  text-align: center;
+  margin-bottom: 50px;
+  letter-spacing: 1px;
+}
+
+.section-divider {
+  width: 60px;
+  height: 2px;
+  background: linear-gradient(to right, transparent, var(--color-magenta), transparent);
+  margin: 14px auto 50px;
+  border-radius: 2px;
+}
+
+/* ============================================================
+   ANIMACIONES GLOBALES
+   ============================================================ */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes glowPulse {
+  0%, 100% { box-shadow: 0 0 20px rgba(224,0,200,0.3); }
+  50%       { box-shadow: 0 0 40px rgba(224,0,200,0.6); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-14px); }
+}
+
+@keyframes zoom {
+  from { transform: scale(1); }
+  to   { transform: scale(1.06); }
+}
+
+@keyframes shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+.animate-fade { animation: fadeInUp 0.7s ease both; }
+.animate-fade-d1 { animation: fadeInUp 0.7s 0.1s ease both; }
+.animate-fade-d2 { animation: fadeInUp 0.7s 0.2s ease both; }
+.animate-fade-d3 { animation: fadeInUp 0.7s 0.3s ease both; }
+.animate-fade-d4 { animation: fadeInUp 0.7s 0.45s ease both; }
+
+.anim-float { animation: float 4s ease-in-out infinite; }
+.anim-zoom  { animation: zoom 4s alternate infinite ease-in-out; }
+
+/* ============================================================
+   RESPONSIVE — NAVBAR MÓVIL
+   ============================================================ */
+@media (max-width: 768px) {
+  .navbar { padding: 0 20px; }
+
+  .navbar-toggle { display: flex; }
+
+  .navbar-links {
+    position: fixed;
+    top: var(--nav-height);
+    left: 0;
+    width: 100%;
+    flex-direction: column;
+    gap: 0;
+    background: rgba(8, 0, 12, 0.97);
+    backdrop-filter: blur(18px);
+    padding: 20px 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease, padding 0.4s ease;
+  }
+
+  .navbar-links.open {
+    max-height: 400px;
+    padding: 20px 0;
+  }
+
+  .navbar-links li { width: 100%; text-align: center; }
+
+  .navbar-links li a {
+    padding: 14px 20px;
+    border-radius: 0;
+    font-size: 0.9rem;
+    border: none;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+
+  .navbar-links li a::after { display: none; }
+}

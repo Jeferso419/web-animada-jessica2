@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jessica — Mensaje</title>
+  <link rel="stylesheet" href="estilos.css">
+  <style>
+
+    /* ===== LAYOUT PRINCIPAL ===== */
+    .mensaje-page {
+      min-height: calc(100vh - var(--nav-height));
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 70px 24px 80px;
+    }
+
+    /* ===== ENCABEZADO DE PÁGINA ===== */
+    .mensaje-header {
+      text-align: center;
+      margin-bottom: 16px;
+      animation: fadeInUp 0.7s ease both;
+    }
+
+    .mensaje-eyebrow {
+      font-size: 0.72rem;
+      letter-spacing: 5px;
+      text-transform: uppercase;
+      color: var(--color-magenta);
+      display: block;
+      margin-bottom: 14px;
+    }
+
+    .mensaje-header h1 {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 5vw, 3rem);
+      color: var(--color-gold);
+      letter-spacing: 3px;
+      text-shadow: 0 0 28px rgba(245,200,66,0.4);
+      margin-bottom: 10px;
+    }
+
+    .mensaje-header p {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: 1rem;
+      color: var(--color-muted);
+    }
+
+    /* ===== POEMA PRINCIPAL ===== */
+    .poema-wrapper {
+      max-width: 760px;
+      width: 100%;
+      margin: 0 auto 60px;
+      animation: fadeInUp 0.7s 0.2s ease both;
+      opacity: 0;
+      animation-fill-mode: forwards;
+    }
+
+    .poema-card {
+      background: rgba(12, 2, 18, 0.72);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border: 1px solid rgba(224, 0, 200, 0.18);
+      border-radius: 24px;
+      padding: 52px 56px;
+      position: relative;
+      overflow: hidden;
+      box-shadow:
+        0 20px 60px rgba(0,0,0,0.5),
+        inset 0 1px 0 rgba(255,255,255,0.06);
+    }
+
+    /* Aura magenta top-left */
+    .poema-card::before {
+      content: '';
+      position: absolute;
+      top: -80px;
+      left: -80px;
+      width: 280px;
+      height: 280px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(224,0,200,0.1) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    /* Aura dorada bottom-right */
+    .poema-card::after {
+      content: '';
+      position: absolute;
+      bottom: -60px;
+      right: -60px;
+      width: 220px;
+      height: 220px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(245,200,66,0.07) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    /* Comillas decorativas */
+    .poema-quote-mark {
+      position: absolute;
+      top: 20px;
+      left: 30px;
+      font-family: var(--font-display);
+      font-size: 7rem;
+      color: var(--color-magenta);
+      opacity: 0.12;
+      line-height: 1;
+      user-select: none;
+      pointer-events: none;
+    }
+
+    .poema-title {
+      font-family: var(--font-display);
+      font-size: 0.72rem;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--color-gold);
+      text-align: center;
+      margin-bottom: 32px;
+      opacity: 0.8;
+    }
+
+    /* Línea separadora dorada */
+    .poema-title-line {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 36px;
+    }
+
+    .poema-title-line hr {
+      flex: 1;
+      border: none;
+      height: 1px;
+      background: linear-gradient(to right, transparent, rgba(245,200,66,0.3), transparent);
+    }
+
+    .poema-title-line span {
+      color: var(--color-gold);
+      font-size: 0.9rem;
+      opacity: 0.6;
+    }
+
+    /* Texto del poema */
+    .poema-text {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: clamp(0.95rem, 2vw, 1.05rem);
+      line-height: 2.2;
+      color: rgba(240, 234, 245, 0.9);
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Cada estrofa */
+    .poema-estrofa {
+      margin-bottom: 28px;
+      padding-bottom: 28px;
+      border-bottom: 1px solid rgba(224,0,200,0.08);
+      opacity: 0;
+      transform: translateY(16px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    .poema-estrofa:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .poema-estrofa.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Pie del poema */
+    .poema-firma {
+      text-align: center;
+      margin-top: 44px;
+      padding-top: 36px;
+      border-top: 1px solid rgba(224,0,200,0.15);
+      position: relative;
+      z-index: 1;
+    }
+
+    .poema-firma p {
+      font-family: var(--font-script);
+      font-size: 1.5rem;
+      color: var(--color-gold);
+      text-shadow: 0 0 16px rgba(245,200,66,0.4);
+      letter-spacing: 1px;
+    }
+
+    .poema-firma span {
+      display: block;
+      font-size: 0.72rem;
+      letter-spacing: 3px;
+      color: var(--color-muted);
+      text-transform: uppercase;
+      margin-top: 8px;
+    }
+
+    /* ===== TARJETA DE DISCULPA / MENSAJE PERSONAL ===== */
+    .disculpa-section {
+      max-width: 640px;
+      width: 100%;
+      margin: 0 auto 60px;
+      animation: fadeInUp 0.7s 0.4s ease both;
+      opacity: 0;
+      animation-fill-mode: forwards;
+    }
+
+    .disculpa-card {
+      background: rgba(245,200,66,0.05);
+      border: 1px solid rgba(245,200,66,0.2);
+      border-left: 4px solid var(--color-gold);
+      border-radius: 16px;
+      padding: 32px 36px;
+      text-align: center;
+    }
+
+    .disculpa-card h3 {
+      font-family: var(--font-display);
+      font-size: 1.1rem;
+      color: var(--color-gold);
+      letter-spacing: 2px;
+      margin-bottom: 16px;
+      text-shadow: 0 0 10px rgba(245,200,66,0.3);
+    }
+
+    .disculpa-card p {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: 0.95rem;
+      line-height: 1.9;
+      color: rgba(240,234,245,0.8);
+    }
+
+    /* ===== FOTO + MENSAJE ===== */
+    .foto-mensaje-row {
+      display: flex;
+      align-items: center;
+      gap: 40px;
+      max-width: 800px;
+      width: 100%;
+      margin: 0 auto 60px;
+      animation: fadeInUp 0.7s 0.5s ease both;
+      opacity: 0;
+      animation-fill-mode: forwards;
+    }
+
+    .foto-mensaje-img {
+      width: 240px;
+      flex-shrink: 0;
+      border-radius: var(--radius-card);
+      overflow: hidden;
+      box-shadow: 0 0 30px rgba(224,0,200,0.25);
+      border: 1px solid rgba(224,0,200,0.2);
+    }
+
+    .foto-mensaje-img img {
+      width: 100%;
+      height: 300px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .foto-mensaje-text h3 {
+      font-family: var(--font-display);
+      font-size: 1.3rem;
+      color: var(--color-gold);
+      letter-spacing: 1.5px;
+      margin-bottom: 14px;
+    }
+
+    .foto-mensaje-text p {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: 0.95rem;
+      line-height: 1.9;
+      color: rgba(240,234,245,0.82);
+    }
+
+    /* ===== MENSAJE FINAL ===== */
+    .cierre-section {
+      text-align: center;
+      max-width: 500px;
+      width: 100%;
+      margin: 0 auto;
+      animation: fadeInUp 0.7s 0.6s ease both;
+      opacity: 0;
+      animation-fill-mode: forwards;
+    }
+
+    .cierre-title {
+      font-family: var(--font-script);
+      font-size: 2.2rem;
+      color: var(--color-gold);
+      text-shadow: 0 0 20px rgba(245,200,66,0.4);
+      margin-bottom: 12px;
+    }
+
+    .cierre-sub {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: 0.95rem;
+      color: var(--color-muted);
+      line-height: 1.8;
+    }
+
+    .cierre-icon {
+      font-size: 2.4rem;
+      display: block;
+      margin-top: 20px;
+      animation: float 3s ease-in-out infinite;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 768px) {
+      .poema-card { padding: 32px 24px; }
+      .foto-mensaje-row { flex-direction: column; }
+      .foto-mensaje-img { width: 100%; }
+      .foto-mensaje-img img { height: 220px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <a href="index.html" class="navbar-brand">✦ Jessica</a>
+    <button class="navbar-toggle" id="menuToggle" aria-label="Abrir menú">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="navbar-links" id="navLinks">
+      <li><a href="index.html">Inicio</a></li>
+      <li><a href="momentos.html">Momentos</a></li>
+      <li><a href="galeria.html">Galería</a></li>
+      <li><a href="mensaje.html" class="activo">Mensaje</a></li>
+    </ul>
+  </nav>
+
+  <!-- CONTENIDO PRINCIPAL -->
+  <main class="mensaje-page">
+
+    <!-- Encabezado -->
+    <div class="mensaje-header">
+      <span class="mensaje-eyebrow">✦ Dedicatoria ✦</span>
+      <h1>Un Mensaje para Ti</h1>
+      <p>Palabras que merecen ser dichas de frente</p>
+      <div class="section-divider"></div>
+    </div>
+
+    <!-- POEMA PRINCIPAL -->
+    <div class="poema-wrapper">
+      <div class="poema-card">
+        <span class="poema-quote-mark">"</span>
+
+        <p class="poema-title">✦ Poema ✦</p>
+        <div class="poema-title-line"><hr><span>✦</span><hr></div>
+
+        <div class="poema-text">
+
+          <div class="poema-estrofa" data-scroll>
+            Rizo' suelto', como rutas que no se repiten,<br>
+            cada curva con historia, de esas que no se escriben.<br>
+            Con esa risa que cambia todo el ambiente,<br>
+            como luz silenciosa que se queda en la mente.
+          </div>
+
+          <div class="poema-estrofa" data-scroll>
+            Fuerte sin ruido, sin tener que explicarlo,<br>
+            de esas presencias que no necesitan forzarlo.<br>
+            Todo en ti refleja equilibrio y certeza,<br>
+            como quien ya entendió su propia firmeza.
+          </div>
+
+          <div class="poema-estrofa" data-scroll>
+            Y aunque lo tenga claro, lo digo de frente,<br>
+            hubo fallas mías que pesan más de lo aparente.<br>
+            Perdón si alguna vez no estuve a la altura,<br>
+            si alteré la calma que llevas tan pura.
+          </div>
+
+          <div class="poema-estrofa" data-scroll>
+            No es discurso vacío ni palabras al viento,<br>
+            es reconocer errores con todo el peso dentro.<br>
+            Porque gente como tú no se cruza dos veces,<br>
+            y menos con esa forma en que el mundo lo meces.
+          </div>
+
+          <div class="poema-estrofa" data-scroll>
+            No hablo de amor, hablo de algo más sincero,<br>
+            de valorar lo real, aunque llegue primero el error.<br>
+            De aprender en silencio lo que antes no veía,<br>
+            y entender lo importante cuando ya se sentía.
+          </div>
+
+          <div class="poema-estrofa" data-scroll>
+            Rizo' con historia, carácter definido,<br>
+            de esas personas que dejan algo sin hacer ruido.<br>
+            Y si alguna vez fallé, queda claro hoy el porqué:<br>
+            no fue falta de intención… fue no saber hacerlo bien.
+          </div>
+
+        </div>
+
+        <!-- Firma -->
+        <div class="poema-firma">
+          <p>Con sinceridad</p>
+          <span>— para Jessica, siempre ✦</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECCIÓN: DISCULPA / MENSAJE HONESTO -->
+    <div class="disculpa-section">
+      <div class="disculpa-card">
+        <h3>✦ Desde el Corazón</h3>
+        <p>
+          Perdón por lo que hice. Sé que no fue lo correcto y asumo completamente mi error. No actué de la mejor manera y entiendo que pudo afectar más de lo que pensé en ese momento. No busco justificarme, solo reconocer que me equivoqué y que debí haber manejado la situación de otra forma. Estoy tomando esto en cuenta para no repetirlo y hacer las cosas mejor en adelante.
+        </p>
+      </div>
+    </div>
+
+    <!-- FOTO + TEXTO PERSONAL -->
+    <div class="foto-mensaje-row">
+      <div class="foto-mensaje-img">
+        <img src="imagenes/482095288_623318613644827_1139698795885283602_n.jpg" alt="Jessica">
+      </div>
+      <div class="foto-mensaje-text">
+        <h3>Para mi Lokita Hermosa</h3>
+        <p>
+          Gente como tú no se cruza dos veces.
+          De esas que dejan algo diferente en cada espacio
+          donde estuvieron. Sin buscarlo, sin pedirlo.
+          Solo con ser. Y eso es extraordinario.
+          <br><br>
+          Ojalá siempre encuentres el camino que mereces,
+          con esa calma tan tuya que nadie te puede quitar.
+        </p>
+      </div>
+    </div>
+
+    <!-- CIERRE -->
+    <div class="cierre-section">
+      <p class="cierre-title">sonsita: te se quiere</p>
+      <p class="cierre-sub">
+        aunque loca — recontra xd<br>
+        pero de verdad, de esas que no se olvidan.
+      </p>
+      <span class="cierre-icon">💜</span>
+    </div>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <p class="footer-mensaje">sonsita: te se quiere ✦ aunque loca, recontra xd</p>
+    <p>Hecho con todo el corazón 💜</p>
+    <p class="footer-copy">© Todos los derechos reservados</p>
+  </footer>
+
+  <script>
+    // Navbar toggle
+    const toggle = document.getElementById('menuToggle');
+    const navLinks = document.getElementById('navLinks');
+    toggle.addEventListener('click', () => {
+      toggle.classList.toggle('open');
+      navLinks.classList.toggle('open');
+    });
+
+    // Scroll reveal para estrofas del poema
+    const estrofas = document.querySelectorAll('[data-scroll]');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry, i) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => {
+            entry.target.classList.add('visible');
+          }, i * 120);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.2 });
+
+    estrofas.forEach(el => observer.observe(el));
+  </script>
+
+</body>
+</html>

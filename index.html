@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jessica — Inicio</title>
+  <link rel="stylesheet" href="estilos.css">
+  <style>
+    /* ===== HERO ===== */
+    .hero {
+      min-height: calc(100vh - var(--nav-height));
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 24px 80px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Aura decorativa de fondo */
+    .hero::after {
+      content: '';
+      position: absolute;
+      width: 500px;
+      height: 500px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(224,0,200,0.12) 0%, transparent 70%);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+
+    .hero-foto-wrapper {
+      position: relative;
+      margin-bottom: 36px;
+    }
+
+    .hero-foto {
+      width: 170px;
+      height: 170px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid rgba(224,0,200,0.5);
+      box-shadow:
+        0 0 0 6px rgba(224,0,200,0.08),
+        0 0 40px rgba(224,0,200,0.35),
+        0 0 80px rgba(224,0,200,0.15);
+      animation: glowPulse 3s ease-in-out infinite;
+      display: block;
+    }
+
+    /* Aro decorativo giratorio */
+    .hero-foto-ring {
+      position: absolute;
+      inset: -14px;
+      border-radius: 50%;
+      border: 1.5px dashed rgba(245,200,66,0.3);
+      animation: spinSlow 18s linear infinite;
+    }
+
+    @keyframes spinSlow {
+      to { transform: rotate(360deg); }
+    }
+
+    .hero-badge {
+      position: absolute;
+      bottom: 4px;
+      right: 4px;
+      background: var(--color-magenta);
+      color: white;
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: var(--radius-pill);
+      border: 1.5px solid rgba(255,255,255,0.2);
+    }
+
+    .hero-titulo {
+      font-family: var(--font-display);
+      font-size: clamp(2.2rem, 6vw, 4rem);
+      color: var(--color-gold);
+      letter-spacing: 3px;
+      text-shadow: 0 0 30px rgba(245,200,66,0.4);
+      margin-bottom: 8px;
+      line-height: 1.15;
+    }
+
+    .hero-subtitulo {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: clamp(1rem, 2.5vw, 1.25rem);
+      color: var(--color-muted);
+      letter-spacing: 1.5px;
+      margin-bottom: 36px;
+    }
+
+    /* Audio player personalizado */
+    .audio-wrapper {
+      margin-bottom: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      animation: fadeInUp 0.7s 0.5s ease both;
+      opacity: 0;
+      animation-fill-mode: forwards;
+    }
+
+    .audio-label {
+      font-size: 0.78rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--color-muted);
+    }
+
+    audio {
+      width: 260px;
+      border-radius: 30px;
+      outline: none;
+      filter: drop-shadow(0 0 8px rgba(224,0,200,0.3));
+    }
+
+    /* Cuadros de navegación (accesos rápidos) */
+    .nav-cubos {
+      display: flex;
+      gap: 14px;
+      justify-content: center;
+      flex-wrap: wrap;
+      max-width: 620px;
+      margin-bottom: 60px;
+      animation: fadeInUp 0.7s 0.6s ease both;
+      opacity: 0;
+      animation-fill-mode: forwards;
+    }
+
+    .cubo-nav {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 6px;
+      min-width: 120px;
+      padding: 16px 24px;
+      border-radius: var(--radius-card);
+      background: rgba(20,5,28,0.6);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(224,0,200,0.2);
+      color: var(--color-white);
+      text-decoration: none;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      transition: var(--transition);
+    }
+
+    .cubo-nav:hover {
+      background: rgba(224,0,200,0.18);
+      border-color: var(--color-magenta);
+      box-shadow: 0 0 24px rgba(224,0,200,0.25);
+      transform: translateY(-4px);
+    }
+
+    .cubo-nav .cubo-icon {
+      font-size: 1.4rem;
+    }
+
+    /* Poema / cita central */
+    .cita-hero {
+      max-width: 680px;
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: clamp(0.95rem, 2.2vw, 1.15rem);
+      line-height: 2.1;
+      color: var(--color-white);
+      background: rgba(20,5,28,0.55);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(224,0,200,0.15);
+      border-left: 3px solid var(--color-magenta);
+      border-right: 3px solid var(--color-magenta);
+      border-radius: var(--radius-card);
+      padding: 32px 40px;
+      animation: fadeInUp 0.7s 0.7s ease both;
+      opacity: 0;
+      animation-fill-mode: forwards;
+    }
+
+    /* ===== GALERÍA EXPANDIBLE PREVIEW ===== */
+    .preview-section {
+      padding: 70px 24px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .preview-grid {
+      display: flex;
+      gap: 12px;
+      height: 340px;
+      align-items: stretch;
+    }
+
+    .preview-item {
+      flex: 1;
+      border-radius: var(--radius-card);
+      background-size: cover;
+      background-position: center;
+      transition: all 0.5s cubic-bezier(0.4,0,0.2,1);
+      cursor: pointer;
+      overflow: hidden;
+      position: relative;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.45);
+    }
+
+    .preview-item::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 55%);
+      border-radius: inherit;
+      transition: var(--transition);
+    }
+
+    .preview-item:hover { flex: 2.5; box-shadow: 0 0 36px rgba(224,0,200,0.3); }
+    .preview-item:hover::before { background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(40,0,55,0.25) 100%); }
+
+    .preview-info {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 20px 16px 14px;
+      transform: translateY(8px);
+      opacity: 0;
+      transition: var(--transition);
+    }
+
+    .preview-item:hover .preview-info {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .preview-info h4 {
+      font-size: 0.78rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--color-gold);
+      margin-bottom: 4px;
+    }
+
+    .preview-info p {
+      font-size: 0.72rem;
+      color: var(--color-muted);
+      font-style: italic;
+    }
+
+    /* ===== CTA BOTONES ===== */
+    .cta-row {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-top: 50px;
+    }
+
+    .btn-primary {
+      display: inline-block;
+      padding: 14px 32px;
+      background: linear-gradient(135deg, var(--color-magenta), #9000b0);
+      color: white;
+      text-decoration: none;
+      border-radius: var(--radius-pill);
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      transition: var(--transition);
+      box-shadow: 0 4px 20px rgba(224,0,200,0.3);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 30px rgba(224,0,200,0.5);
+    }
+
+    .btn-outline {
+      display: inline-block;
+      padding: 14px 32px;
+      border: 1.5px solid var(--color-gold);
+      color: var(--color-gold);
+      text-decoration: none;
+      border-radius: var(--radius-pill);
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      transition: var(--transition);
+    }
+
+    .btn-outline:hover {
+      background: var(--color-gold-soft);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(245,200,66,0.2);
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 768px) {
+      .hero { padding: 50px 20px 60px; }
+      .hero-foto { width: 130px; height: 130px; }
+      .audio-wrapper { flex-direction: column; gap: 8px; }
+      audio { width: 90vw; }
+      .nav-cubos { gap: 10px; }
+      .cubo-nav { min-width: 100px; padding: 12px 16px; }
+      .cita-hero { padding: 22px 20px; }
+      .preview-grid { flex-direction: column; height: auto; }
+      .preview-item { height: 180px; flex: none; }
+      .preview-item:hover { flex: none; }
+      .preview-info { opacity: 1; transform: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== NAVBAR ===== -->
+  <nav class="navbar">
+    <a href="index.html" class="navbar-brand">✦ Jessica</a>
+    <button class="navbar-toggle" id="menuToggle" aria-label="Abrir menú">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="navbar-links" id="navLinks">
+      <li><a href="index.html" class="activo">Inicio</a></li>
+      <li><a href="momentos.html">Momentos</a></li>
+      <li><a href="galeria.html">Galería</a></li>
+      <li><a href="mensaje.html">Poema</a></li>
+    </ul>
+  </nav>
+
+  <!-- ===== HERO ===== -->
+  <section class="hero">
+
+    <!-- Foto circular -->
+    <div class="hero-foto-wrapper animate-fade">
+      <div class="hero-foto-ring"></div>
+      <img class="hero-foto" src="imagenes/WhatsApp Image 2026-04-09 at 11.13.09.jpeg" alt="Jessica">
+      <span class="hero-badge">✦ Especial</span>
+    </div>
+
+    <h1 class="hero-titulo animate-fade-d1">¡Bienvenida, Jessica!</h1>
+    <p class="hero-subtitulo animate-fade-d2">A su ritmo, sin presión y siempre brillando</p>
+
+    <!-- Audio -->
+    <div class="audio-wrapper">
+      <span class="audio-label">🎵 canción</span>
+      <audio id="player" controls>
+        <source src="musica/SaveTik.io_7580707419500596487.mp3" type="audio/mpeg">
+        Tu navegador no soporta audio.
+      </audio>
+    </div>
+
+    <!-- Accesos rápidos (los cubos originales mejorados) -->
+    <div class="nav-cubos">
+      <a href="https://jeferso419.github.io/pagiananan23/" class="cubo-nav" target="_blank">
+        <span class="cubo-icon">💜</span>
+        LOKITA
+      </a>
+      <a href="https://jeferso419.github.io/web-animada/" class="cubo-nav" target="_blank">
+        <span class="cubo-icon">✨</span>
+        SONSITA
+      </a>
+      <a href="https://jeferso419.github.io/weebb222/" class="cubo-nav" target="_blank">
+        <span class="cubo-icon">🤍</span>
+        TE
+      </a>
+      <a href="https://jeferso419.github.io/pagina-243/" class="cubo-nav" target="_blank">
+        <span class="cubo-icon">💛</span>
+        QUIERO
+      </a>
+    </div>
+
+    <!-- Cita/poema breve -->
+    <blockquote class="cita-hero">
+      Siempre en la suya, con esa risa que contagia,<br>
+      de las que hacen liviano hasta el peor día.<br>
+      Cabello rizado, mente clara, paso firme,<br>
+      de esas personas que no necesitan fingir ni subirse.
+    </blockquote>
+
+  </section>
+
+  <!-- ===== PREVIEW DE GALERÍA ===== -->
+  <section class="preview-section">
+    <h2 class="section-title animate-fade">PARA MI LOKITA</h2>
+    <p class="section-subtitle animate-fade-d1">Cada imagen, una historia que vale la pena guardar</p>
+    <div class="section-divider"></div>
+
+    <div class="preview-grid">
+      <div class="preview-item" style="background-image:url(imagenes/657115887_914089044567781_940879130356630845_n.jpg)">
+        <div class="preview-info"><h4>Para Ti</h4><p>Con mucho cariño</p></div>
+      </div>
+      <div class="preview-item" style="background-image:url(imagenes/WhatsApp\ Image\ 2026-04-18\ at\ 16.30.31.jpeg)">
+        <div class="preview-info"><h4>Tu Mirada</h4><p>Dice cosas que las palabras no alcanzan</p></div>
+      </div>
+      <div class="preview-item" style="background-image:url(imagenes/image.png)">
+        <div class="preview-info"><h4>Sonrisa</h4><p>De esas que iluminan sin intentarlo</p></div>
+      </div>
+      <div class="preview-item" style="background-image:url(imagenes/WhatsApp\ Image\ 2026-04-09\ at\ 11.13.09.jpeg)">
+        <div class="preview-info"><h4>Tu Forma</h4><p>Tan natural que parece perfecta</p></div>
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="cta-row">
+      <a href="galeria.html" class="btn-primary">Ver Galería Completa</a>
+      <a href="mensaje.html" class="btn-outline">Leer el Mensaje</a>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="site-footer">
+    <p class="footer-mensaje">sonsita: te se quiere ✦ aunque loca, recontra xd</p>
+    <p>Hecho con todo el corazón 💜</p>
+    <p class="footer-copy">© Todos los derechos reservados</p>
+  </footer>
+
+  <!-- ===== SCRIPT NAVBAR MÓVIL ===== -->
+  <script>
+    const toggle = document.getElementById('menuToggle');
+    const navLinks = document.getElementById('navLinks');
+    toggle.addEventListener('click', () => {
+      toggle.classList.toggle('open');
+      navLinks.classList.toggle('open');
+    });
+    // Cerrar al hacer clic en un enlace
+    navLinks.querySelectorAll('a').forEach(a => {
+      a.addEventListener('click', () => {
+        toggle.classList.remove('open');
+        navLinks.classList.remove('open');
+      });
+    });
+  </script>
+
+</body>
+</html>

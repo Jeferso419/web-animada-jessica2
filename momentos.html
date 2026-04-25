@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jessica — Momentos</title>
+  <link rel="stylesheet" href="estilos.css">
+  <style>
+    /* ===== PAGE HEADER ===== */
+    .page-header {
+      text-align: center;
+      padding: 70px 24px 50px;
+    }
+
+    .page-header-label {
+      font-size: 0.75rem;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--color-magenta);
+      margin-bottom: 14px;
+      display: block;
+    }
+
+    .page-header h1 {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      color: var(--color-gold);
+      letter-spacing: 3px;
+      text-shadow: 0 0 24px rgba(245,200,66,0.35);
+      margin-bottom: 16px;
+    }
+
+    .page-header p {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: 1rem;
+      color: var(--color-muted);
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    /* ===== MOMENTOS GRID ===== */
+    .momentos-section {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 20px 24px 80px;
+    }
+
+    /* Momento 1 — imagen izquierda, texto derecha */
+    .momento-card {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      align-items: center;
+      margin-bottom: 80px;
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+
+    .momento-card.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Alternado: imagen derecha en el par */
+    .momento-card.reverse {
+      direction: rtl;
+    }
+    .momento-card.reverse > * {
+      direction: ltr;
+    }
+
+    .momento-img-wrapper {
+      position: relative;
+      border-radius: var(--radius-card);
+      overflow: hidden;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.5);
+    }
+
+    .momento-img-wrapper::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      border: 1px solid rgba(224,0,200,0.2);
+      pointer-events: none;
+    }
+
+    .momento-img-wrapper img {
+      width: 100%;
+      height: 380px;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.6s ease;
+    }
+
+    .momento-img-wrapper:hover img {
+      transform: scale(1.04);
+    }
+
+    /* Número decorativo */
+    .momento-number {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      font-family: var(--font-display);
+      font-size: 1.8rem;
+      color: var(--color-gold);
+      opacity: 0.55;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    .momento-content {
+      padding: 20px 10px;
+    }
+
+    .momento-tag {
+      display: inline-block;
+      background: rgba(224,0,200,0.15);
+      border: 1px solid rgba(224,0,200,0.3);
+      color: var(--color-magenta);
+      font-size: 0.68rem;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      padding: 5px 14px;
+      border-radius: var(--radius-pill);
+      margin-bottom: 16px;
+    }
+
+    .momento-content h2 {
+      font-family: var(--font-display);
+      font-size: clamp(1.4rem, 3vw, 1.9rem);
+      color: var(--color-gold);
+      letter-spacing: 1.5px;
+      margin-bottom: 16px;
+      line-height: 1.3;
+      text-shadow: 0 0 14px rgba(245,200,66,0.3);
+    }
+
+    .momento-content p {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: 1rem;
+      color: rgba(240,234,245,0.85);
+      line-height: 1.9;
+      margin-bottom: 20px;
+    }
+
+    .momento-divider {
+      width: 40px;
+      height: 2px;
+      background: var(--color-magenta);
+      border-radius: 2px;
+      margin-bottom: 16px;
+    }
+
+    .momento-footer-text {
+      font-size: 0.78rem;
+      letter-spacing: 1.5px;
+      color: var(--color-muted);
+      text-transform: uppercase;
+    }
+
+    /* ===== TIMELINE DECORATIVA ===== */
+    .timeline-sep {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin: 10px 0 80px;
+    }
+
+    .timeline-sep hr {
+      flex: 1;
+      border: none;
+      height: 1px;
+      background: linear-gradient(to right, transparent, rgba(224,0,200,0.3), transparent);
+    }
+
+    .timeline-sep span {
+      font-family: var(--font-script);
+      font-size: 1.2rem;
+      color: var(--color-magenta);
+      opacity: 0.6;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 768px) {
+      .momento-card,
+      .momento-card.reverse {
+        grid-template-columns: 1fr;
+        gap: 20px;
+        direction: ltr;
+      }
+
+      .momento-img-wrapper img {
+        height: 260px;
+      }
+
+      .momento-content {
+        padding: 10px 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <a href="index.html" class="navbar-brand">✦ Jessica</a>
+    <button class="navbar-toggle" id="menuToggle" aria-label="Abrir menú">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="navbar-links" id="navLinks">
+      <li><a href="index.html">Inicio</a></li>
+      <li><a href="momentos.html" class="activo">Momentos</a></li>
+      <li><a href="galeria.html">Galería</a></li>
+      <li><a href="mensaje.html">Mensaje</a></li>
+    </ul>
+  </nav>
+
+  <!-- PAGE HEADER -->
+  <header class="page-header">
+    <span class="page-header-label animate-fade">✦ Recuerdos ✦</span>
+    <h1 class="animate-fade-d1">Colección</h1>
+    <p class="animate-fade-d2">Galería de capturas destacadas</p>
+    <div class="section-divider"></div>
+  </header>
+
+  <!-- MOMENTOS -->
+  <main class="momentos-section">
+
+    <!-- Momento 1 -->
+    <article class="momento-card" data-scroll>
+      <div class="momento-img-wrapper">
+        <img src="imagenes/657115887_914089044567781_940879130356630845_n.jpg" alt="Momento especial">
+        <span class="momento-number">01</span>
+      </div>
+      <div class="momento-content">
+        <span class="momento-tag">Para Ti</span>
+        <h2>Esa Risa que lo Cambia Todo</h2>
+        <div class="momento-divider"></div>
+        <p>
+          Se caracteriza por una actitud tranquila y segura, con ideas claras y una forma directa de actuar. Mantiene coherencia entre lo que piensa y lo que hace, proyectando una presencia natural y definida.
+        </p>
+        <span class="momento-footer-text">con mucho cariño ✦</span>
+      </div>
+    </article>
+
+    <div class="timeline-sep"><hr><span>✦</span><hr></div>
+
+    <!-- Momento 2 — invertido -->
+    <article class="momento-card reverse" data-scroll>
+      <div class="momento-img-wrapper">
+        <img src="imagenes/WhatsApp Image 2026-04-18 at 16.30.31.jpeg" alt="Tu mirada">
+        <span class="momento-number">02</span>
+      </div>
+      <div class="momento-content">
+        <span class="momento-tag">Tu Mirada</span>
+        <h2>Lo que los Ojos Dicen Sin Palabras</h2>
+        <div class="momento-divider"></div>
+        <p>
+          Hay miradas que hablan solas. Que dicen más en un segundo
+          que cualquier conversación larga. La tuya es de esas.
+          Directa, clara, honesta. Sin adornos ni mentiras.
+        </p>
+        <span class="momento-footer-text">dice cosas que las palabras no alcanzan ✦</span>
+      </div>
+    </article>
+
+    <div class="timeline-sep"><hr><span>✦</span><hr></div>
+
+    <!-- Momento 3 -->
+    <article class="momento-card" data-scroll>
+      <div class="momento-img-wrapper">
+        <img src="imagenes/image.png" alt="Sonrisa">
+        <span class="momento-number">03</span>
+      </div>
+      <div class="momento-content">
+        <span class="momento-tag">Sonrisa</span>
+        <h2>De las que Iluminan sin Intentarlo</h2>
+        <div class="momento-divider"></div>
+        <p>
+          No tienes que hacer nada especial para que todo cambie
+          cuando sonríes. Es natural. Es tuyo. Y eso lo hace
+          todavía más valioso. Hay personas que iluminan por artificio
+           tú lo haces sin querer.
+        </p>
+        <span class="momento-footer-text">sin esfuerzo, simplemente tú ✦</span>
+      </div>
+    </article>
+
+    <div class="timeline-sep"><hr><span>✦</span><hr></div>
+
+    <!-- Momento 4 — invertido -->
+    <article class="momento-card reverse" data-scroll>
+      <div class="momento-img-wrapper">
+        <img src="imagenes/WhatsApp Image 2026-04-09 at 11.13.09.jpeg" alt="Tu forma">
+        <span class="momento-number">04</span>
+      </div>
+      <div class="momento-content">
+        <span class="momento-tag">Tu Forma</span>
+        <h2>Tan Natural que Parece Perfecta</h2>
+        <div class="momento-divider"></div>
+        <p>
+          Lo más difícil del mundo es ser auténtico. Y tú lo haces
+          como si fuera lo más fácil. Sin ensayar, sin poses,
+          sin pretender ser algo que no eres. Solo tú.
+          Y eso es suficiente más que suficiente.
+        </p>
+        <span class="momento-footer-text">auténtica de verdad ✦</span>
+      </div>
+    </article>
+
+    <div class="timeline-sep"><hr><span>✦</span><hr></div>
+
+    <!-- Momento 5 -->
+    <article class="momento-card" data-scroll>
+      <div class="momento-img-wrapper">
+        <img src="imagenes/482095288_623318613644827_1139698795885283602_n.jpg" alt="Momento">
+        <span class="momento-number">05</span>
+      </div>
+      <div class="momento-content">
+        <span class="momento-tag">Siempre Tú</span>
+        <h2>Rizo' con Historia, Carácter Definido</h2>
+        <div class="momento-divider"></div>
+        <p>
+          Cabello rizado como rutas que no se repiten, cada curva con historia,
+          de esas que no se escriben. Fuerte sin ruido, sin tener que explicarlo.
+          De esas presencias que no necesitan forzarlo.
+          Todo en ti refleja equilibrio y certeza.
+        </p>
+        <span class="momento-footer-text">de las que dejan huella sin hacer ruido ✦</span>
+      </div>
+    </article>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <p class="footer-mensaje">sonsita: te se quiere ✦ aunque loca, recontra xd</p>
+    <p>Hecho con todo el corazón 💜</p>
+    <p class="footer-copy">© Todos los derechos reservados</p>
+  </footer>
+
+  <script>
+    // Navbar toggle
+    const toggle = document.getElementById('menuToggle');
+    const navLinks = document.getElementById('navLinks');
+    toggle.addEventListener('click', () => {
+      toggle.classList.toggle('open');
+      navLinks.classList.toggle('open');
+    });
+
+    // Animación scroll reveal para los momentos
+    const cards = document.querySelectorAll('[data-scroll]');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+
+    cards.forEach(card => observer.observe(card));
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jessica — Galería</title>
+  <link rel="stylesheet" href="estilos.css">
+  <style>
+    /* ===== PAGE HEADER ===== */
+    .page-header {
+      text-align: center;
+      padding: 70px 24px 50px;
+    }
+
+    .page-header-label {
+      font-size: 0.75rem;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--color-magenta);
+      margin-bottom: 14px;
+      display: block;
+    }
+
+    .page-header h1 {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      color: var(--color-gold);
+      letter-spacing: 3px;
+      text-shadow: 0 0 24px rgba(245,200,66,0.35);
+      margin-bottom: 16px;
+    }
+
+    .page-header p {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: 1rem;
+      color: var(--color-muted);
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    /* ===== SLIDER MEJORADO ===== */
+    .slider-section {
+      padding: 20px 24px 70px;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .slider-label {
+      text-align: center;
+      font-size: 0.72rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--color-magenta);
+      margin-bottom: 22px;
+    }
+
+    .slider-container {
+      position: relative;
+      border-radius: var(--radius-card);
+      overflow: hidden;
+      box-shadow:
+        0 0 0 1px rgba(224,0,200,0.2),
+        0 0 40px rgba(224,0,200,0.2),
+        0 20px 60px rgba(0,0,0,0.6);
+    }
+
+    /* Track y slides */
+    .slider-track {
+      display: flex;
+      transition: transform 0.6s cubic-bezier(0.4,0,0.2,1);
+    }
+
+    .slide {
+      min-width: 100%;
+      position: relative;
+    }
+
+    .slide img {
+      width: 100%;
+      height: 480px;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* Overlay degradado en cada slide */
+    .slide::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        to top,
+        rgba(0,0,0,0.65) 0%,
+        transparent 50%
+      );
+    }
+
+    /* Caption de cada slide */
+    .slide-caption {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 2;
+      padding: 28px 28px 22px;
+    }
+
+    .slide-caption h3 {
+      font-family: var(--font-display);
+      font-size: 1.2rem;
+      color: var(--color-gold);
+      letter-spacing: 1.5px;
+      margin-bottom: 4px;
+    }
+
+    .slide-caption p {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: 0.85rem;
+      color: var(--color-muted);
+    }
+
+    /* Botones prev/next */
+    .slider-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 10;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(255,255,255,0.2);
+      background: rgba(0,0,0,0.5);
+      backdrop-filter: blur(8px);
+      color: white;
+      font-size: 1.1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition);
+    }
+
+    .slider-btn:hover {
+      background: rgba(224,0,200,0.4);
+      border-color: var(--color-magenta);
+      box-shadow: 0 0 16px rgba(224,0,200,0.3);
+    }
+
+    .slider-btn.prev { left: 14px; }
+    .slider-btn.next { right: 14px; }
+
+    /* Dots indicadores */
+    .slider-dots {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 18px;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.25);
+      cursor: pointer;
+      transition: var(--transition);
+      border: none;
+    }
+
+    .dot.active {
+      background: var(--color-magenta);
+      box-shadow: 0 0 10px rgba(224,0,200,0.5);
+      width: 22px;
+      border-radius: 4px;
+    }
+
+    /* ===== GRID DE GALERÍA ===== */
+    .gallery-section {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 20px 24px 80px;
+    }
+
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+
+    /* Items especiales: algunos más grandes */
+    .gallery-item {
+      position: relative;
+      border-radius: 16px;
+      overflow: hidden;
+      cursor: pointer;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+      opacity: 0;
+      transform: scale(0.96);
+      transition: opacity 0.5s ease, transform 0.5s ease, box-shadow 0.35s ease;
+    }
+
+    .gallery-item.visible {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .gallery-item:nth-child(1) { grid-row: span 2; }
+    .gallery-item:nth-child(5) { grid-column: span 2; }
+
+    .gallery-item img {
+      width: 100%;
+      height: 100%;
+      min-height: 220px;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.6s ease;
+    }
+
+    .gallery-item:hover img {
+      transform: scale(1.07);
+    }
+
+    .gallery-item:hover {
+      box-shadow: 0 0 30px rgba(224,0,200,0.35);
+    }
+
+    /* Overlay al hover de la galería */
+    .gallery-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(40,0,55,0.6);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: var(--transition);
+    }
+
+    .gallery-item:hover .gallery-overlay {
+      opacity: 1;
+    }
+
+    .gallery-overlay-icon {
+      font-size: 2rem;
+      margin-bottom: 8px;
+      transform: scale(0.7);
+      transition: transform 0.4s ease;
+    }
+
+    .gallery-item:hover .gallery-overlay-icon {
+      transform: scale(1);
+    }
+
+    .gallery-overlay p {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: 0.82rem;
+      color: var(--color-muted);
+      text-align: center;
+      padding: 0 12px;
+    }
+
+    /* ===== IMÁGENES FLOTANTES CON ANIMACIONES ===== */
+    .extra-section {
+      padding: 40px 24px 70px;
+      display: flex;
+      justify-content: center;
+      gap: 50px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .extra-item {
+      text-align: center;
+    }
+
+    .extra-item img {
+      width: 220px;
+      height: 280px;
+      object-fit: cover;
+      border-radius: var(--radius-card);
+      box-shadow:
+        0 8px 32px rgba(0,0,0,0.45),
+        0 0 24px rgba(224,0,200,0.2);
+      border: 1px solid rgba(224,0,200,0.2);
+    }
+
+    .extra-item p {
+      margin-top: 12px;
+      font-size: 0.72rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--color-muted);
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 768px) {
+      .slide img { height: 300px; }
+
+      .gallery-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .gallery-item:nth-child(1) { grid-row: span 1; }
+      .gallery-item:nth-child(5) { grid-column: span 1; }
+
+      .extra-section { gap: 24px; }
+      .extra-item img { width: 150px; height: 190px; }
+    }
+
+    @media (max-width: 480px) {
+      .gallery-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <a href="index.html" class="navbar-brand">✦ Jessica</a>
+    <button class="navbar-toggle" id="menuToggle" aria-label="Abrir menú">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="navbar-links" id="navLinks">
+      <li><a href="index.html">Inicio</a></li>
+      <li><a href="momentos.html">Momentos</a></li>
+      <li><a href="galeria.html" class="activo">Galería</a></li>
+      <li><a href="mensaje.html">Mensaje</a></li>
+    </ul>
+  </nav>
+
+  <!-- PAGE HEADER -->
+  <header class="page-header">
+    <span class="page-header-label animate-fade">✦ Imágenes ✦</span>
+    <h1 class="animate-fade-d1">Galería</h1>
+    <p class="animate-fade-d2">Para mi lokita hermosa  cada foto, un recuerdo</p>
+    <div class="section-divider"></div>
+  </header>
+
+  <!-- SLIDER MEJORADO -->
+  <section class="slider-section animate-fade-d2">
+    <p class="slider-label">✦ Slider de momentos ✦</p>
+    <div class="slider-container">
+      <button class="slider-btn prev" id="prevBtn" aria-label="Anterior">&#8249;</button>
+      <button class="slider-btn next" id="nextBtn" aria-label="Siguiente">&#8250;</button>
+
+      <div class="slider-track" id="sliderTrack">
+        <div class="slide">
+          <img src="imagenes/482095288_623318613644827_1139698795885283602_n.jpg" alt="Foto 1">
+          <div class="slide-caption">
+            <h3>Para Mi Lokita</h3>
+            <p>Con todo el cariño del mundo</p>
+          </div>
+        </div>
+        <div class="slide">
+          <img src="imagenes/657115887_914089044567781_940879130356630845_n.jpg" alt="Foto 2">
+          <div class="slide-caption">
+            <h3>Esa Sonrisa</h3>
+            <p>Que lo cambia todo sin intentarlo</p>
+          </div>
+        </div>
+        <div class="slide">
+          <img src="imagenes/WhatsApp Image 2026-04-18 at 16.28.12.jpeg" alt="Foto 3">
+          <div class="slide-caption">
+            <h3>Tu Luz</h3>
+            <p>Silenciosa y constante</p>
+          </div>
+        </div>
+        <div class="slide">
+          <img src="imagenes/WhatsApp Image 2026-04-18 at 16.30.31.jpeg" alt="Foto 4">
+          <div class="slide-caption">
+            <h3>Tu Mirada</h3>
+            <p>Dice más que mil palabras</p>
+          </div>
+        </div>
+        <div class="slide">
+          <img src="imagenes/WhatsApp Image 2026-04-18 at 16.31.48.jpeg" alt="Foto 5">
+          <div class="slide-caption">
+            <h3>Momento Especial</h3>
+            <p>Guardado para siempre</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Dots -->
+      <div class="slider-dots" id="sliderDots"></div>
+    </div>
+  </section>
+
+  <!-- GRID GALERÍA -->
+  <section class="gallery-section">
+    <h2 class="section-title animate-fade">COLLEGE</h2>
+    <p class="section-subtitle animate-fade-d1">Una colección de recuerdos que guardar</p>
+    <div class="section-divider"></div>
+
+    <div class="gallery-grid">
+      <div class="gallery-item" data-scroll>
+        <img src="imagenes/482095288_623318613644827_1139698795885283602_n.jpg" alt="Foto especial">
+        <div class="gallery-overlay">
+          <span class="gallery-overlay-icon">💜</span>
+          <p>Para ti, siempre</p>
+        </div>
+      </div>
+      <div class="gallery-item" data-scroll>
+        <img src="imagenes/657115887_914089044567781_940879130356630845_n.jpg" alt="Sonrisa">
+        <div class="gallery-overlay">
+          <span class="gallery-overlay-icon">✨</span>
+          <p>Esa risa que contagia</p>
+        </div>
+      </div>
+      <div class="gallery-item" data-scroll>
+        <img src="imagenes/WhatsApp Image 2026-04-18 at 16.28.12.jpeg" alt="Momento">
+        <div class="gallery-overlay">
+          <span class="gallery-overlay-icon">🌙</span>
+          <p>Momento único</p>
+        </div>
+      </div>
+      <div class="gallery-item" data-scroll>
+        <img src="imagenes/WhatsApp Image 2026-04-18 at 16.30.31.jpeg" alt="Tu mirada">
+        <div class="gallery-overlay">
+          <span class="gallery-overlay-icon">💫</span>
+          <p>Tu mirada dice todo</p>
+        </div>
+      </div>
+      <div class="gallery-item" data-scroll>
+        <img src="imagenes/WhatsApp Image 2026-04-18 at 16.31.48.jpeg" alt="Tu forma">
+        <div class="gallery-overlay">
+          <span class="gallery-overlay-icon">🌸</span>
+          <p>Tan natural y perfecta</p>
+        </div>
+      </div>
+      <div class="gallery-item" data-scroll>
+        <img src="imagenes/image.png" alt="Otra foto">
+        <div class="gallery-overlay">
+          <span class="gallery-overlay-icon">💛</span>
+          <p>Siempre brillando</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- IMÁGENES CON ANIMACIONES (zoom y float originales, mejoradas) -->
+  <section class="extra-section">
+    <div class="extra-item">
+      <img src="imagenes/WhatsApp Image 2026-04-18 at 16.30.31.jpeg"
+           class="anim-zoom"
+           alt="Foto animada zoom">
+      <p>✦ siempre brillando ✦</p>
+    </div>
+    <div class="extra-item">
+      <img src="imagenes/WhatsApp Image 2026-04-18 at 16.31.48.jpeg"
+           class="anim-float"
+           alt="Foto animada float">
+      <p>✦ tan especial ✦</p>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <p class="footer-mensaje">sonsita: te se quiere ✦ aunque loca, recontra xd</p>
+    <p>Hecho con todo el corazón 💜</p>
+    <p class="footer-copy">© Todos los derechos reservados</p>
+  </footer>
+
+  <script>
+    // ===== NAVBAR TOGGLE =====
+    const toggle = document.getElementById('menuToggle');
+    const navLinks = document.getElementById('navLinks');
+    toggle.addEventListener('click', () => {
+      toggle.classList.toggle('open');
+      navLinks.classList.toggle('open');
+    });
+
+    // ===== SLIDER JS INTERACTIVO =====
+    const track = document.getElementById('sliderTrack');
+    const slides = track.querySelectorAll('.slide');
+    const dotsContainer = document.getElementById('sliderDots');
+    let current = 0;
+    let autoTimer;
+
+    // Crear dots
+    slides.forEach((_, i) => {
+      const dot = document.createElement('button');
+      dot.className = 'dot' + (i === 0 ? ' active' : '');
+      dot.setAttribute('aria-label', `Ir a slide ${i+1}`);
+      dot.addEventListener('click', () => goTo(i));
+      dotsContainer.appendChild(dot);
+    });
+
+    function goTo(index) {
+      current = (index + slides.length) % slides.length;
+      track.style.transform = `translateX(-${current * 100}%)`;
+      dotsContainer.querySelectorAll('.dot').forEach((d, i) => {
+        d.classList.toggle('active', i === current);
+      });
+    }
+
+    function startAuto() {
+      autoTimer = setInterval(() => goTo(current + 1), 4000);
+    }
+
+    function stopAuto() {
+      clearInterval(autoTimer);
+    }
+
+    document.getElementById('prevBtn').addEventListener('click', () => {
+      stopAuto(); goTo(current - 1); startAuto();
+    });
+    document.getElementById('nextBtn').addEventListener('click', () => {
+      stopAuto(); goTo(current + 1); startAuto();
+    });
+
+    startAuto();
+
+    // ===== SCROLL REVEAL GALERÍA =====
+    const items = document.querySelectorAll('[data-scroll]');
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach((e, i) => {
+        if (e.isIntersecting) {
+          setTimeout(() => e.target.classList.add('visible'), i * 80);
+          obs.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.1 });
+
+    items.forEach(item => obs.observe(item));
+  </script>
+
+</body>
+</html>
